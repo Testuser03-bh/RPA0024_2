@@ -39,13 +39,14 @@ Process Step 29
         END
 
         ${indent_status}=    Set Variable    ${row["Indent Reference/Status"]}
-        ${current_PO_Step}=    Get PO Step  ${po}
+        ${current_PO_Step}=    Get 
+        O Step  ${po}
         # Fixed
         IF   '${current_PO_Step}' == ''
             ${current_PO_Step}=    Set Variable    0
         END
         Log To Console With Timestamp      Status of ${po} - ${status}, Here Index Value - ${index}
-        IF    '${status}' == '' and ${index}<5
+        IF    '${status}' == '' and ${index}<100
         # IF    '${status}' == '' 
             Log To Console With Timestamp    Index Value ${index}
             # Step 29.2 onward
@@ -575,12 +576,13 @@ Send_PO_PDF
 Open Order Page And PO
     [Arguments]     ${po}
     Activate Nav Window     Purchase Order RPA
-    ${if_role_button}=   Run Keyword and Return Status  Wait for Element    ${role_center}      timeout=60
+    ${if_role_button}=   Run Keyword and Return Status  Wait for Element    ${role_center}      timeout=20
     IF   not ${if_role_button}
-        RPA.Desktop.Click     ${back_button}
+        Wait For Element      ${role_center_not_found_purchase_order}     timeout=15
+        RPA.Desktop.Click     ${role_center_not_found_purchase_order}
+    ELSE
+        RPA.Desktop.Click      ${role_center}
     END
-    Wait For Element     ${role_center}    timeout=80
-    RPA.Desktop.Click      ${role_center}
     Log To Console With Timestamp    Role Center Clicked
     RPA.Desktop.Type Text    ${primary_config['PurchaseOrderPath']}
     RPA.Desktop.Press Keys      enter
@@ -667,7 +669,7 @@ Log To Console With Timestamp
     ${timestamp}=    DateTime.Get Current Date    result_format=%Y-%m-%d %H:%M:%S
     Log To Console    [${timestamp}] ${message}
 
-    
+
 NAV Set Log Transactions
     [Arguments]    ${total}
     ${lib}=    Get Library Instance    RobotProcessLibrary
