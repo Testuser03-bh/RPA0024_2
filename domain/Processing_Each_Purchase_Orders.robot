@@ -33,14 +33,13 @@ Process Step 29
         NAV Increment Technically Checked
 
         # Skip invalid rows — missing DocumentNo
-        IF    '${po}' == '' or '${po}' is None
+        IF    '${po}' == '' or '${po}' == None
             Log To Console With Timestamp    Skipping invalid row — missing DocumentNo at index ${index}
             CONTINUE
         END
 
         ${indent_status}=    Set Variable    ${row["Indent Reference/Status"]}
-        ${current_PO_Step}=    Get 
-        O Step  ${po}
+        ${current_PO_Step}=    Get PO Step  ${po}
         # Fixed
         IF   '${current_PO_Step}' == ''
             ${current_PO_Step}=    Set Variable    0
