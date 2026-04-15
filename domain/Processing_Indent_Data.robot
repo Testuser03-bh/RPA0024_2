@@ -42,7 +42,9 @@ Open Navision and VTI
 
 
 Processing Indent RPA and Purchase Orders
-    ${merged_table_step_28}=    Open Indent RPA 
+    ${merged_table_step_28}=    Open Indent RPA
+    ${total_items}=    Get Length    ${merged_table_step_28}
+    NAV Set Log Transactions    ${total_items} 
     ${log_file}=    Process Step29    ${merged_table_step_28}
     ${current_time}=    Get Time    format=%d/%m/%y %H:%M:%S
     ${email_body}=      Set Variable    Navision RPA Log List - ${current_time}

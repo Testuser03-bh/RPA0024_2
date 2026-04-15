@@ -28,9 +28,19 @@ Process Step 29
         ${status}=    Set Variable    ${row["Status"]}
         ${po}=    Set Variable    ${row["DocumentNo"]}
         Log To Console With Timestamp      Here :- ${po}
+
+        # Technically Checked — every iteration regardless of outcome
+        NAV Increment Technically Checked
+
+        # Skip invalid rows — missing DocumentNo
+        IF    '${po}' == '' or '${po}' is None
+            Log To Console With Timestamp    Skipping invalid row — missing DocumentNo at index ${index}
+            CONTINUE
+        END
+
         ${indent_status}=    Set Variable    ${row["Indent Reference/Status"]}
         ${current_PO_Step}=    Get PO Step  ${po}
-        # FIxed
+        # Fixed
         IF   '${current_PO_Step}' == ''
             ${current_PO_Step}=    Set Variable    0
         END
@@ -124,6 +134,7 @@ Process Step 29
             IF    '${leading_pc}' != ''
                 Set To Dictionary     ${row}    ProfitCenter=${leading_pc}
             END
+        NAV Increment Done And Technically Checked
         RPA.Tables.Set Table Row    ${table}    ${index}    ${row}
         RPA.Tables.Write Table To CSV      ${table}      ${output_csv_29_phase}
         END
@@ -655,3 +666,24 @@ Log To Console With Timestamp
     [Arguments]    ${message}
     ${timestamp}=    DateTime.Get Current Date    result_format=%Y-%m-%d %H:%M:%S
     Log To Console    [${timestamp}] ${message}
+
+    
+NAV Set Log Transactions
+    [Arguments]    ${total}
+    ${lib}=    Get Library Instance    RobotProcessLibrary
+    Evaluate    setattr($lib.config, 'Log_Transactions', str(${total}))
+    Log To Console    NAV Log_Transactions set to: ${total}
+
+NAV Increment Done And Technically Checked
+    ${lib}=    Get Library Instance    RobotProcessLibrary
+    ${new_done}=    Evaluate    int($lib.config.Log_Done) + 1
+    ${new_loop}=    Evaluate    int($lib.config.Log_Looping) + 1
+    Evaluate    setattr($lib.config, 'Log_Done', str(${new_done}))
+    Evaluate    setattr($lib.config, 'Log_Looping', str(${new_loop}))
+    Log To Console    NAV Completed: ${new_done} | TechnicallyChecked: ${new_loop}
+
+NAV Increment Technically Checked
+    ${lib}=    Get Library Instance    RobotProcessLibrary
+    ${new_loop}=    Evaluate    int($lib.config.Log_Looping) + 1
+    Evaluate    setattr($lib.config, 'Log_Looping', str(${new_loop}))
+    Log To Console    NAV TechnicallyChecked: ${new_loop}
