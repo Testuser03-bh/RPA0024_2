@@ -45,7 +45,7 @@ Process Step 29
             ${current_PO_Step}=    Set Variable    0
         END
         Log To Console With Timestamp      Status of ${po} - ${status}, Here Index Value - ${index}
-        IF    '${status}' == '' and ${index}<100
+        IF    '${status}' == '' and ${index}<100 and ${current_PO_Step} == 9
         # IF    '${status}' == '' 
             Log To Console With Timestamp    Index Value ${index}
             # Step 29.2 onward
@@ -81,8 +81,8 @@ Process Step 29
                 ELSE
                     Set To Dictionary    ${row}    Status=PO approved and waiting to be posted
                 END
-                ${ok_button}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-                IF   ${ok_button}
+                ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+                IF   ${ok_button_status}
                     RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
                 END
             # 29.5
@@ -122,8 +122,10 @@ Process Step 29
                         Log To Console With Timestamp    Failed to update purchase order ${po}.
                     END
                 END
-                Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-                RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+                ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+                IF   ${ok_button_status}
+                    RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+                END
             END
             IF    '${leading_pc}' == ''
                 Log To Console With Timestamp    leading_pc not retrieved - fetching now
@@ -258,9 +260,12 @@ Process Step 29_2
                 RPA.Desktop.Press Keys      enter   
                 Log to console with timestamp        Here in Step 29.2 ${error_message}
                 Set To Dictionary    ${row}    Status=Please check the PO. The buyer needs to finalize the process and change the Purchaser Code
-                Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-                RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
-                ${ok_clicked}=    Set Variable    True          
+                ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+                IF   ${ok_button_status}
+                    RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+                    ${ok_clicked}=    Set Variable    True  
+                END
+                        
             END
             # porperly Aligned wiht Doc
             IF  $indent_status != "Open" and not ${ok_clicked}
@@ -275,53 +280,66 @@ Process Step 29_2
                     Log To Console With Timestamp    Failed to insert purchase order.
                 END
                 
-                Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png     timeout=60
-                RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+                ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+                IF   ${ok_button_status}
+                    RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+                    ${ok_clicked}=    Set Variable    True  
+                END
             END
         END
     # 29.2.9
     ELSE IF    ${po_step} == 0 and not ${is_mrp} and $indent_status != 'Open'
         Set To Dictionary    ${row}    Status=Please check the PO. The buyer needs to finalize the process and change the Purchaser Code
         Set List Value    ${table}    ${index}    ${row}
-        Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-        RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
-        ${ok_clicked}=    Set Variable    True
+        ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+        IF   ${ok_button_status}
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+            ${ok_clicked}=    Set Variable    True  
+        END
     # 29.2.10
     ELSE IF    ${po_step} == 2 and not ${is_mrp}
         Log To Console With Timestamp   29.2.10 – Not MRP + Step = 2
         Set To Dictionary
         ...    ${row}
         ...    Status=No action for this Purchase Order
-        Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-        RPA.Desktop.Click   image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
-        ${ok_clicked}=      Set Variable        True
+        ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+        IF   ${ok_button_status}
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+            ${ok_clicked}=    Set Variable    True  
+        END
     # 29.2.11
     ELSE IF    ${is_mrp} and ${is_rework} and ${po_step} == 2
         Log To Console With Timestamp      In step 29.2.11
         Set To Dictionary
         ...    ${row}
         ...    Status=No action for this Purchase Order
-        Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-        RPA.Desktop.Click   image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
-        ${ok_clicked}=      Set Variable        True
+        ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+        IF   ${ok_button_status}
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+            ${ok_clicked}=    Set Variable    True  
+        END
     # 29.2.12
     ELSE IF    not ${is_mrp} and ${po_step} == 0 and $indent_status == 'Open'
         Log To Console With Timestamp      Step 29.2.12
         Set To Dictionary
         ...    ${row}
         ...    Status=PO open, please check and request approval
-        Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-        RPA.Desktop.Click   image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
-        ${ok_clicked}=      Set Variable        True
+        ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+        IF   ${ok_button_status}
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+            ${ok_clicked}=    Set Variable    True  
+        END
     # 29.2.13
     ELSE IF    ${is_mrp} and ${is_rework} and ${po_step} == 0 and $indent_status == 'open'
         Log To Console With Timestamp      29.2.13
         Set To Dictionary
         ...    ${row}
         ...    Status=PO open, please check and request approval
-        Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-        RPA.Desktop.Click   image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
-        ${ok_clicked}=      Set Variable        True
+        ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+        IF   ${ok_button_status}
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+            ${ok_clicked}=    Set Variable    True  
+        END
     # 29.2.14
     ELSE IF    not ${is_mrp} and ${po_step} != 2 and ${po_step} != 0 and $indent_status != 'Open'
         Log To Console With Timestamp   29.2.14 – Insert DB
@@ -459,8 +477,11 @@ Process Step 29_2
     END
     Log To Console With Timestamp      HEre before step 18
     IF   not ${ok_clicked}
-        Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=10
-        RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+        ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+        IF   ${ok_button_status}
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+            ${ok_clicked}=    Set Variable    True  
+        END
     END
     ${window_title}=    RPA.Windows.List Windows
     ${is_po_window}=    Evaluate    '${po}' in $window_title
@@ -560,10 +581,13 @@ Send_PO_PDF
         RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}emaileditor.png
         ${team_email}=    Set Variable     ${primary_config['E-mail_Team']}
         RPA.Desktop.Type Text     ${team_email}
+        Sleep    2s
+        Wait For Element     image:${EXECDIR}${/}data${/}Images${/}ebody_page.png      10
         RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}ebody_page.png
         RPA.Desktop.Press Keys      ctrl    v
         Sleep     2s
         Wait for Element    image:${EXECDIR}${/}data${/}Images${/}send_email.png   timeout=100
+        Sleep     2s
         RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}send_email.png
     END
     # Step 29.2.14.6 and 7 missing as there is no Email outplook editor opened in any purchaese order
