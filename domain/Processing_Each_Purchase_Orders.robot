@@ -45,7 +45,7 @@ Process Step 29
             ${current_PO_Step}=    Set Variable    0
         END
         Log To Console With Timestamp      Status of ${po} - ${status}, Here Index Value - ${index}
-        IF    '${status}' == '' and ${index}<100 and ${current_PO_Step} == 9
+        IF    '${status}' == '' and ${index}<100
         # IF    '${status}' == '' 
             Log To Console With Timestamp    Index Value ${index}
             # Step 29.2 onward
