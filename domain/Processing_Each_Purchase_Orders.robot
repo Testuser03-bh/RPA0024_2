@@ -81,10 +81,7 @@ Process Step 29
                 ELSE
                     Set To Dictionary    ${row}    Status=PO approved and waiting to be posted
                 END
-                ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
-                IF   ${ok_button_status}
-                    RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
-                END
+            
             # 29.5
             ELSE IF      ${current_PO_Step} == 3
                 Log To Console With Timestamp   29.5 – PO Step = 3
