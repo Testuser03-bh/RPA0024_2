@@ -523,6 +523,7 @@ Send_PO_PDF
     RPA.Desktop.Press Keys      p
     Sleep    0.5s
     RPA.Desktop.Press Keys      a
+    Sleep    1s
     Press Custom Combination    ctrl    enter
     Sleep    2s
     ${error_message}=       Set Variable    None
@@ -575,15 +576,10 @@ Send_PO_PDF
 Open Order Page And PO
     [Arguments]     ${po}
     Activate Nav Window     Purchase Order RPA
-    ${if_role_button}=   Run Keyword and Return Status  Wait for Element    ${role_center}      timeout=20
-    IF   not ${if_role_button}
-        Wait For Element      ${role_center_not_found_purchase_order}     timeout=15
-        RPA.Desktop.Click     ${role_center_not_found_purchase_order}
-    ELSE
-        RPA.Desktop.Click      ${role_center}
-    END
-    Log To Console With Timestamp    Role Center Clicked
-    RPA.Desktop.Type Text    ${primary_config['PurchaseOrderPath']}
+    Wait For Element     image:${EXECDIR}${/}data${/}Images${/}Purchase_order_loop.png     timeout=60
+    RPA.Desktop.Click      image:${EXECDIR}${/}data${/}Images${/}Purchase_order_loop.png
+    RPA.Desktop.Type Text    ${primary_config['PurchaseOrderPath'].split('/')[3]}
+    Sleep    2s
     RPA.Desktop.Press Keys      enter
     ${purchase_order_verify}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Purchase_Order_verify.png      timeout=10
     Sleep    2s

@@ -2,6 +2,7 @@
 ${VTI_TEST_IMAGE}     image:${CURDIR}${/}..${/}data${/}Images${/}VTI_test.png
 ${Description_header_step_18}     image:${CURDIR}${/}..${/}data${/}Images${/}Description_Header_Step_18.png
 ${role_center}      image:${CURDIR}${/}..${/}data${/}Images${/}role_center.png
+${role_center}      image:${CURDIR}${/}..${/}data${/}Images${/}Purchase_order_loop.png
 ${back_button}      image:${CURDIR}${/}..${/}data${/}Images${/}back_button.png
 ${Indent_line_rpa}    image:${EXECDIR}${/}data${/}Images${/}Indent_line_rpa_check.png
 ${another_check}    image:${EXECDIR}${/}data${/}Images${/}another_check.png 
