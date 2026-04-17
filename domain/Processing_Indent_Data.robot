@@ -139,7 +139,7 @@ Extract And Save Clipboard Table
 
 Open Indent RPA 
     Log To Console With Timestamp     Here before active nav widnow
-    Activate Nav Window     Role Center     System
+    Minimize Screen     Role Center     System
     Log To Console With Timestamp    Here
     Sleep    1s
     # Step  7 tp 10

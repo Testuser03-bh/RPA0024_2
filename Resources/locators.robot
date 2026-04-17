@@ -5,6 +5,8 @@ ${role_center}      image:${CURDIR}${/}..${/}data${/}Images${/}role_center.png
 ${role_center}      image:${CURDIR}${/}..${/}data${/}Images${/}Purchase_order_loop.png
 ${back_button}      image:${CURDIR}${/}..${/}data${/}Images${/}back_button.png
 ${Indent_line_rpa}    image:${EXECDIR}${/}data${/}Images${/}Indent_line_rpa_check.png
+${window_streched}    image:${EXECDIR}${/}data${/}Images${/}window_streched.png
+${close_outlook}    image:${EXECDIR}${/}data${/}Images${/}close_outlook.png
 ${another_check}    image:${EXECDIR}${/}data${/}Images${/}another_check.png 
 ${Wait_for_role_center}    image:${EXECDIR}${/}data${/}Images${/}Wait_for_role_center.png 
 ${role_center_not_found_purchase_order}    image:${EXECDIR}${/}data${/}Images${/}role_center_not_found_purchase_order.png

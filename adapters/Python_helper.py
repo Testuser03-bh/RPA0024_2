@@ -272,7 +272,7 @@ def Close_existing_navision():
 def activate_nav_window(name="Role Center", role="VTI Testsystem"):
     for window in gw.getAllWindows():
         title = window.title
-        if name in title or role in title or "Role" in title or "Indents Line RPA" in title or "Purchase Orders RPA" in title and "- VTI" not in title and "-VTI" not in title:
+        if name in title or role in title or "Role Center" in title or "Indents Line RPA" in title or "Purchase Orders RPA" in title and "- VTI" not in title and "-VTI" not in title:
             logger.console(f"Activating NAV window: {name} {role}")
             try:
                 if window.isMinimized:
@@ -290,7 +290,22 @@ def activate_nav_window(name="Role Center", role="VTI Testsystem"):
             logger.console(f"Activated NAV window: {title}")
             break
     time.sleep(2)
-
+def minimize_screen(name="Role Center", role="VTI Testsystem"):
+    for window in gw.getAllWindows():
+        title = window.title
+        if name in title or role in title or "Role Center" in title or "Indents Line RPA" in title or "Purchase Orders RPA" in title and "- VTI" not in title and "-VTI" not in title:
+            try:
+                if window.isMinimized:
+                    window.restore()
+                    time.sleep(0.5)
+                window.activate()
+                time.sleep(0.5)
+                window.minimize()
+            except Exception as e:
+                logger.console(f"Activate failed: {e}")
+            logger.console(f"Activated NAV window: {title}")
+            break
+    time.sleep(2)
 def activate_nav_window_msnav(name="Indent RPA", role="VTI Testsystem"):
     for window in gw.getAllWindows():
         title = window.title

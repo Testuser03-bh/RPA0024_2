@@ -25,13 +25,13 @@ End To End NAV Smart Flow
     # Environment and Config Setup
     Prepare Working Environment
 
-    # # Remove Existing Directories and Creating new
+    # # # Remove Existing Directories and Creating new
     Clear And Create Directory
 
-    # Opening Navision VTI for Processing
+    # # Opening Navision VTI for Processing
     Open Navision and VTI
-    # Processing Each PO and Indents...
+    # # Processing Each PO and Indents...
     Processing Indent RPA and Purchase Orders
-    # Close Nav Window
+    # # Close Nav Window
     Close Existing Navision
 

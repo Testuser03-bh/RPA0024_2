@@ -127,6 +127,11 @@ Process Step 29
             IF    '${leading_pc}' == ''
                 Log To Console With Timestamp    leading_pc not retrieved - fetching now
                 ${leading_pc}=    Open_And_Extract_PO_Data    ${po}    ${False}
+                ${ok_button_status}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png    timeout=60
+                IF   ${ok_button_status}
+                    RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}Ok_button_29_2_8_14.png
+                    ${ok_clicked}=    Set Variable    True  
+                END
             ELSE
                 Log To Console With Timestamp    leading_pc already retrieved: ${leading_pc} - skipping NAV
             END
@@ -571,35 +576,68 @@ Send_PO_PDF
             END
         END
     ELSE
-        ${body}=    Set Variable    ${primary_config['eBody']}
-        ${body}=     Format Plain Text     ${body}
-        Set Clipboard Value      ${body}
-        Wait for Element    image:${EXECDIR}${/}data${/}Images${/}emaileditor.png   timeout=100
-        RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}emaileditor.png
-        ${team_email}=    Set Variable     ${primary_config['E-mail_Team']}
-        RPA.Desktop.Type Text     ${team_email}
-        Sleep    2s
-        Wait For Element     image:${EXECDIR}${/}data${/}Images${/}ebody_page.png      10
-        RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}ebody_page.png
-        RPA.Desktop.Press Keys      ctrl    v
-        Sleep     2s
-        Wait for Element    image:${EXECDIR}${/}data${/}Images${/}send_email.png   timeout=100
-        Sleep     2s
-        RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}send_email.png
+        ${email_dialog_open}=    Run Keyword And Return Status     Wait for Element    image:${EXECDIR}${/}data${/}Images${/}emaileditor.png   timeout=100    interval=10
+        RPA.Desktop.Clear Clipboard
+        RPA.Desktop.Press Keys      ctrl    a
+        RPA.Desktop.Press Keys      ctrl    c
+        Sleep    1s
+        ${error_message}=    RPA.Desktop.Get Clipboard Value
+        log to console     Here is the email- ${error_message} ---
+        IF  not ${email_dialog_open}
+            ${result}=    Update PO Step    ${po}   9
+            IF    ${result}
+                Log To Console With Timestamp    Purchase order ${po} updated to Step 3 successfully.
+            ELSE
+                Log To Console With Timestamp    Failed to update purchase order ${po}.
+            END
+            Set To Dictionary
+            ...    ${row}
+            ...    Status=Outlook couldn’t be opened
+
+        ELSE IF    $error_message != ''
+            ${body}=    Set Variable    ${primary_config['eBody']}
+            ${body}=     Format Plain Text     ${body} 
+            Set Clipboard Value      ${body}
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}emaileditor.png
+            Sleep    2s
+            Wait For Element     image:${EXECDIR}${/}data${/}Images${/}ebody_page.png      10
+            RPA.Desktop.Click    image:${EXECDIR}${/}data${/}Images${/}ebody_page.png
+            RPA.Desktop.Press Keys      ctrl    v
+            Sleep     2s
+            Wait for Element    image:${EXECDIR}${/}data${/}Images${/}send_email.png   timeout=100
+            Sleep     2s
+            RPA.Desktop.Highlight Elements    image:${EXECDIR}${/}data${/}Images${/}send_email.png
+            Set To Dictionary
+            ...    ${row}
+            ...    Status=Email sent to the vendor.
+        ELSE
+            RPA.Desktop.Click       ${close_outlook}
+            RPA.Desktop.Press Keys      enter
+            Set To Dictionary
+            ...    ${row}
+            ...    Status=Vendor email address not found.
+        END
     END
-    # Step 29.2.14.6 and 7 missing as there is no Email outplook editor opened in any purchaese order
-    
-    Set To Dictionary
-    ...    ${row}
-    ...    Status=Email sent to the vendor.
+
     RETURN      ${row}      ${error_message}
 
 Open Order Page And PO
     [Arguments]     ${po}
     Activate Nav Window     Purchase Order RPA
-    Wait For Element     image:${EXECDIR}${/}data${/}Images${/}Purchase_order_loop.png     timeout=60
-    RPA.Desktop.Click      image:${EXECDIR}${/}data${/}Images${/}Purchase_order_loop.png
-    RPA.Desktop.Type Text    ${primary_config['PurchaseOrderPath'].split('/')[3]}
+    ${is_window_streched}=    Run keyword And Return Status     Wait for Element    ${window_streched}     10
+    IF  not ${is_window_streched}
+        Minimize Screen     Purchase Order RPA     Role Center
+        Activate Nav Window     Purchase Order RPA      Role Center
+    END
+    ${if_role_button}=   Run Keyword and Return Status    Wait for Element    ${role_center}      timeout=20
+    IF  not ${if_role_button}
+        Wait For Element      ${back_button}     timeout=15
+        RPA.Desktop.Click     ${back_button}
+    END
+    Wait for Element    ${role_center}      timeout=20
+    RPA.Desktop.Click     ${role_center}
+    Log To Console With Timestamp    Role Center Clicked
+    RPA.Desktop.Type Text    ${primary_config['PurchaseOrderPath']}
     Sleep    2s
     RPA.Desktop.Press Keys      enter
     ${purchase_order_verify}=   Run Keyword and Return Status     Wait For Element    image:${EXECDIR}${/}data${/}Images${/}Purchase_Order_verify.png      timeout=10
